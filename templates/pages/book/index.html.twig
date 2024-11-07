@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Home {% endblock %}
+{% block body  %}
+
+
+<div class="col-12 py-4">
+    <h2 class="text-center">Books</h2>
+    <div class="row row-cols-xl-5 row-cols-md-2 row-cols-sm-1 px-5 py-4">
+        {% for book in books %}
+          <div class="col py-4">
+            <div class="card shadow bg-dark bg-opacity-50" style="height: 24rem;">
+                <img src='{{book.BookCover}}' class="card-img-top img-fluid mx-auto d-block" alt='book cover {{book.BookTitle}}' style="height: 60%;">
+                <div class="card-body bg-white">
+                    <h5 class="card-title">{{book.BookTitle}}</h5>
+                    <p class="card-text">{{book.Author}}</p>
+                    <h5><span class="badge bg-secondary">{{book.Genre}}</span> <span class="badge bg-secondary">{{book.Pages}} Pages</span></h5>
+                    <a href='/book/{{book.Id}}' class="btn btn-primary">Read Reviews</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+{% endblock %}

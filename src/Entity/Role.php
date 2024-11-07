@@ -53,26 +53,4 @@ class Role
     {
         return $this->users;
     }
-
-    public function addUser(User $user): static
-    {
-        if (!$this->users->contains($user)) {
-            $this->users->add($user);
-            $user->setRole($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUser(User $user): static
-    {
-        if ($this->users->removeElement($user)) {
-            // set the owning side to null (unless already changed)
-            if ($user->getRole() === $this) {
-                $user->setRole(null);
-            }
-        }
-
-        return $this;
-    }
 }

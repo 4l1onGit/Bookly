@@ -7,3 +7,15 @@ controllers:
 review_create:
   path: /review/create
   controller: App\Controller\ReviewController::createReview
+
+index_book:
+  path: /
+  controller: App\Controller\BookController::home
+
+create_book:
+  path: /book/create
+  controller: App\Controller\BookController::createBook
+
+view_book:
+  path: /book/{id}
+  controller: App\Controller\BookController::viewBook

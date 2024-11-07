@@ -3,9 +3,9 @@
 namespace App\Entity;
 
 use App\Repository\BookRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
 class Book
@@ -16,67 +16,82 @@ class Book
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $title = null;
+    private ?string $book_title = null;
 
-    /**
-     * @var Collection<int, BookReview>
-     */
-    #[ORM\OneToMany(targetEntity: BookReview::class, mappedBy: 'book', orphanRemoval: true)]
-    private Collection $reviews;
+    #[ORM\Column(length: 255)]
+    private ?string $author = null;
 
+    #[ORM\Column]
+    private ?int $pages = null;
 
-    public function __construct()
-    {
-        $this->reviews = new ArrayCollection();
+    #[ORM\Column(length: 255)]
+    private ?string $genre = null;
 
-    }
+    #[ORM\Column(length: 255)]
+    private String $bookCover;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getTitle(): ?string
+    public function getBookTitle(): ?string
     {
-        return $this->title;
+        return $this->book_title;
     }
 
-    public function setTitle(string $title): static
+    public function setBookTitle(string $book_title): static
     {
-        $this->title = $title;
+        $this->book_title = $book_title;
 
         return $this;
     }
 
-    /**
-     * @return Collection<int, BookReview>
-     */
-    public function getReviews(): Collection
+    public function getAuthor(): ?string
     {
-        return $this->reviews;
+        return $this->author;
     }
 
-    public function addReview(BookReview $review): static
+    public function setAuthor(string $author): static
     {
-        if (!$this->reviews->contains($review)) {
-            $this->reviews->add($review);
-            $review->setBook($this);
-        }
+        $this->author = $author;
 
         return $this;
     }
 
-    public function removeReview(BookReview $review): static
+    public function getPages(): ?int
     {
-        if ($this->reviews->removeElement($review)) {
-            // set the owning side to null (unless already changed)
-            if ($review->getBook() === $this) {
-                $review->setBook(null);
-            }
-        }
+        return $this->pages;
+    }
+
+    public function setPages(int $pages): static
+    {
+        $this->pages = $pages;
 
         return $this;
     }
 
+    public function getGenre(): ?string
+    {
+        return $this->genre;
+    }
 
+    public function setGenre(string $genre): static
+    {
+        $this->genre = $genre;
+
+        return $this;
+    }
+
+    public function getBookCover(): String
+    {
+        return $this->bookCover;
+    }
+
+    public function setBookCover($file): static
+    {
+        $this->bookCover = $file;
+
+        return $this;
+    }
 }
