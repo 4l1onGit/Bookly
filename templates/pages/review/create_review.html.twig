@@ -4,55 +4,57 @@
 
 {% block body %}
 
+{{ form_start(form, {'method': 'POST'})}}
 <div class="d-flex p-4 flex-column justify-content-center align-items-center">
     <div class="container-fluid">
-        <label class="py-2" for="{{ field_name(form.title) }}">{{ field_label(form.title)}}:</label>
-        <input
-        name="{{ field_name(form.title) }}"
-        value="{{ field_value(form.title) }}"
-        placeholder="{{ field_label(form.title) }}"
-        class="form-control py-2"
-        ></input>
-    </div>
-    <div class="container-fluid">
-        <label class="py-2" for="{{ field_name(form.author) }}">{{ field_label(form.author)}}:</label>
-        <input
-        name="{{ field_name(form.author) }}"
-        value="{{ field_value(form.author) }}"
-        placeholder="{{ field_label(form.author) }}"
-        class="form-control py-2"
-        ></input>
-    </div>
-    <div class="container-fluid">
-        <label class="py-2" for="{{ field_name(form.pages) }}">{{ field_label(form.pages)}}:</label>
-        <input
-        name="{{ field_name(form.pages) }}"
-        type="number"
-        value="{{ field_value(form.pages) }}"
-        placeholder="{{ field_label(form.pages) }}"
-        class="form-control py-2"
-        ></input>
-    </div>
-     <div class="container-fluid">
         <label class="py-2" for="{{ field_name(form.review_text) }}">{{ field_label(form.review_text)}}:</label>
-        <input
+        <textarea
         name="{{ field_name(form.review_text) }}"
         value="{{ field_value(form.review_text) }}"
         placeholder="{{ field_label(form.review_text) }}"
         class="form-control py-2"
-        ></input>
-    </div>
-     <div class="container-fluid">
-        <label class="py-2" for="{{ field_name(form.summary) }}">{{ field_label(form.summary)}}:</label>
-        <textarea
-        name="{{ field_name(form.summary) }}"
-        value="{{ field_value(form.summary) }}"
-        placeholder="{{ field_label(form.summary) }}"
-        class="form-control py-2"
         ></textarea>
     </div>
+    <div class="container-fluid">
+        <label class="py-2" for="{{ field_name(form.rating) }}">{{ field_label(form.rating)}}:</label>
+        <input
+        name="{{ field_name(form.rating) }}"
+        type="number"
+        min="1"
+        max="5"
+        value="{{ field_value(form.rating) }}"
+        placeholder="{{ field_label(form.rating) }}"
+        class="form-control py-2"
+        ></input>
+    </div>
+    <div class="container-fluid">
+        <label class="py-2" for="{{ field_name(form.book) }}">{{ field_label(form.book)}}:</label>
+        <select
+         name="{{ field_name(form.book) }}"
+        class="form-select py-2"
+        >
+         {% for label, value in field_choices(form.book) %}
+        <option value="{{ value }}">
+        {% for book in books %}
+        {{ book.id == value ? book.bookTitle : null}}
+        {% endfor %}
+        </option>
+    {% endfor %}
+        </select>
+    </div>
+      <select
+        hidden
+         name="{{ field_name(form.reviewer) }}"
+        class="form-select py-2"
+        >
+
+        <option value="{{ user.id }}">
+     
+        </option>
+  
+        </select>
     <button class="btn btn-success m-4 align-self-start" type="submit">Submit</button>
 </div>
-
+{{ form_end(form)}}
 
 {% endblock %}

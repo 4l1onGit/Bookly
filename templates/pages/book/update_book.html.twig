@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Create Book {% endblock %}
+
+{% block body %}
+{{ form_start(form, {'method': 'PATCH'})}}
+<div class="d-flex p-4 flex-column justify-content-center align-items-center">
+    <div class="container-fluid">
+        <label class="py-2" for="{{ field_name(form.book_title) }}">{{ field_label(form.book_title)}}:</label>
+        <input
+        name="{{ field_name(form.book_title) }}"
+        value="{{ book.bookTitle }}"
+        placeholder="{{ book.bookTitle }}"
+        class="form-control py-2"
+        ></input>
+    </div>
+    <div class="container-fluid">
+        <label class="py-2" for="{{ field_name(form.author) }}">{{ field_label(form.author)}}:</label>
+        <input
+        name="{{ field_name(form.author) }}"
+        value="{{ book.author }}"
+        placeholder="{{ book.author }}"
+        class="form-control py-2"
+        ></input>
+    </div>
+    <div class="container-fluid">
+        <label class="py-2" for="{{ field_name(form.pages) }}">{{ field_label(form.pages)}}:</label>
+        <input
+        name="{{ field_name(form.pages) }}"
+        type="number"
+        value="{{ book.pages }}"
+        placeholder="{{ book.pages }}"
+        class="form-control py-2"
+        ></input>
+    </div>
+     <div class="container-fluid">
+        <label class="py-2" for="{{ field_name(form.genre) }}">{{ field_label(form.genre)}}:</label>
+        <input
+        name="{{ field_name(form.genre) }}"
+        value="{{ book.genre }}"
+        placeholder="{{ book.genre }}"
+        class="form-control py-2"
+        ></input>
+    </div>
+      <div class="container-fluid">
+        <label class="py-2" for="{{ field_name(form.bookCover) }}">{{ field_label(form.bookCover)}}:</label>
+        <input
+        type="file"
+        name="{{ field_name(form.bookCover) }}"
+        value="{{ book.bookCover }}"
+        placeholder="{{ book.bookCover }}"
+        class="form-control py-2"
+        ></input>
+    </div>
+    <button class="btn btn-success m-4 align-self-start" type="submit">Submit</button>
+</div>
+{{ form_end(form)}}
+
+
+
+{% endblock %}

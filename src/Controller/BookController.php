@@ -3,14 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Book;
-use App\Entity\BookReview;
-use App\Form\BookReviewType;
 use App\Form\BookType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 class BookController extends AbstractController
 {
@@ -21,24 +20,18 @@ class BookController extends AbstractController
     }
 
 
-    /**
-     *  
-     * @Route("/", name="index_book", methods={"GET"})
-     * 
-     */
+
+    #[Route("/", name: "index_book", methods: "GET")]
     public function home(): Response
     {
         $bookRepo = $this->em->getRepository(Book::class);
         $books = $bookRepo->findAll();
+        $user = $this->getUser();
 
-        return $this->render('pages/book/index.html.twig', ['books' => $books]);
+        return $this->render('pages/book/index.html.twig', ['books' => $books, 'user' => $user]);
     }
 
-    /**
-     *  
-     * @Route("/book/{id}", name="index_book", methods={"GET"})
-     * 
-     */
+    #[Route("/book/{id}", name: "view_book", methods: "GET")]
     public function viewBook($id): Response
     {
         $bookRepo = $this->em->getRepository(Book::class);
@@ -52,11 +45,8 @@ class BookController extends AbstractController
         }
     }
 
-    /**
-     * 
-     * @Route("/book/create", name="create_book", methods={"POST"})
-     * 
-     */
+
+    #[Route("/book/create", name: "create_book", methods: "POST")]
     public function createBook(Request $request): Response
     {
 
@@ -89,6 +79,77 @@ class BookController extends AbstractController
 
             return $this->redirect('/');
         }
-        return $this->render('pages/book/create_book.html.twig', ['form' => $form]);
+        return $this->render('pages/book/create_book.html.twig', ['form' => $form, 'user' => $this->getUser()]);
+    }
+
+    #[Route("/book/update/{id}", name: "update_book", methods: ['GET', 'PATCH'])]
+    public function updateBook($id, Request $request): Response
+    {
+        $errors = [];
+        $bookRepo = $this->em->getRepository(Book::class);
+        $book = $bookRepo->find($id);
+        $updatedBook = new Book();
+
+        if ($book) {
+            $form = $this->createForm(BookType::class, $updatedBook, ['method' => 'PATCH']);
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+
+                $formBookTitle = $form->get('book_title')->getData();
+                $formAuthor = $form->get('author')->getData();
+                $formGenre = $form->get('genre')->getData();
+                $formPages = $form->get('pages')->getData();
+
+                if ($book->getBookTitle() != $formBookTitle && $formBookTitle != null && $formBookTitle != '') {
+                    $book->setBookTitle($formBookTitle);
+                } else {
+                    $error[] = "Title not valid, Title not updated";
+                }
+
+                if ($book->getAuthor() != $formAuthor && $formAuthor != null && $formAuthor != '') {
+                    $book->setAuthor($formAuthor);
+                } else {
+                    $error[] = "Author not valid, Author not updated";
+                }
+
+                if ($book->getGenre() != $formGenre && $formGenre != null && $formGenre != '') {
+                    $book->setGenre($formGenre);
+                } else {
+                    $error[] = "Author not valid, Author not updated";
+                }
+
+                if ($book->getPages() != $formPages && $formPages != null && $formPages != '') {
+                    $book->setPages($formPages);
+                } else {
+                    $error[] = "Author not valid, Author not updated";
+                }
+
+
+                $this->em->persist($book);
+                $this->em->flush();
+            }
+        } else {
+            return new Response('Book not found', 404);
+        }
+
+        return $this->render('pages/book/update_book.html.twig', ['form' => $form, 'book' => $book, 'user' => $this->getUser()]);
+    }
+
+
+    #[Route("/book/delete/{id}", name: "delete_book")]
+    public function deleteBook($id): Response
+    {
+
+        $bookRepo = $this->em->getRepository(Book::class);
+        $book = $bookRepo->find($id);
+        if ($book) {
+            $this->em->remove($book);
+        } else {
+            return new Response('Book not found', 404);
+        }
+
+        $this->em->flush();
+
+        return $this->redirect('/');
     }
 }

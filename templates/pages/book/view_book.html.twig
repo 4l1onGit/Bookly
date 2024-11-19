@@ -2,3 +2,34 @@
 
 {% block title %} {{book.BookTitle}} {% endblock %}
 
+{% block body %}
+<div class="container py-4">
+   <div class="row align-items-top">
+   <div class="col">
+        <div class="d-flex flex-column align-items-center">
+            <img src={{book.bookCover}} class="rounded mx-auto d-block" alt="...">
+            <h2 class="py-4">{{book.bookTitle}}</h2>
+            <h5>Summary:</h5>
+            <p>{{book.summary}}</p>
+        </div>
+   </div>
+   <div class="col col-6">
+        <h2 class="d-flex align-items-center justify-content-between">Reviews<span class="fw-light fs-5">&#91;{{book.reviews|length}}&#93;</span></h2>
+        <ul class="list-group">
+            {% for review in book.reviews %}
+            <li class="list-group-item">
+                <div class="d-flex flex-column">
+                    <div class="d-flex justify-content-between py-2">
+                    <div class="fw-light"><i class="bi bi-person-circle px-2"></i>{{review.reviewer.email}}</div>
+                    <div>{{review.rating}}<i class="bi bi-star-fill px-1"></i></div>
+                    </div>
+                    <p>{{review.reviewText}}</p> 
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+   </div>
+</div>
+
+{% endblock %}
