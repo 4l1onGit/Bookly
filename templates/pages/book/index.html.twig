@@ -16,14 +16,13 @@
                     <p class="card-text">{{book.Author}}</p>
                     <h5><span class="badge bg-secondary">{{book.Genre}}</span> <span class="badge bg-secondary">{{book.Pages}} Pages</span></h5>
                     <a href='/book/{{book.Id}}' class="btn btn-primary">Read Reviews</a>
-                    {% if user != null %}
-                    {% if 'administrator' in user.roles %}
+                    {% if is_granted('ROLE_ADMIN') %}
                     <a href='/book/delete/{{book.id}}' class='btn btn-danger'><i class='bi bi-trash-fill'></i></a>
                     {% endif %}
-                    {% if 'moderator' or 'administrator' in user.roles %}
+                    {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_MOD') %}
                     <a href='/book/update/{{book.id}}' class='btn btn-success'><i class='bi bi-pencil-square'></i></a>
                     {% endif %}
-                    {% endif %}
+                   
                     
                 </div>
             </div>

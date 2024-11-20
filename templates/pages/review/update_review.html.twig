@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Create Review {% endblock %}
+
+{% block body %}
+
+{{ form_start(form, {'method': 'PATCH'})}}
+<div class="d-flex p-4 flex-column justify-content-center align-items-center">
+    <div class="container-fluid">
+        <label class="py-2" for="{{ field_name(form.review_text) }}">{{ field_label(form.review_text)}}:</label>
+        <textarea
+        name="{{ field_name(form.review_text) }}"
+        value="{{ field_value(form.review_text) }}"
+        placeholder="{{ field_value(form.review_text) }}"
+        class="form-control py-2"
+        ></textarea>
+    </div>
+    <div class="container-fluid">
+        <label class="py-2" for="{{ field_name(form.rating) }}">{{ field_label(form.rating)}}:</label>
+        <input
+        name="{{ field_name(form.rating) }}"
+        type="number"
+        min="1"
+        max="5"
+        value="{{ field_value(form.rating) }}"
+        placeholder="{{ field_label(form.rating) }}"
+        class="form-control py-2"
+        ></input>
+    </div>
+    <div class="container-fluid">
+        <label class="py-2" for="{{ field_name(form.book) }}">{{ field_label(form.book)}}:</label>
+        <select
+         name="{{ field_name(form.book) }}"
+        class="form-select py-2"
+        >
+         {% for label, value in field_choices(form.book) %}
+        <option value="{{ value }}">
+        {% for book in books %}
+        {{ book.id == value ? book.bookTitle : null}}
+        {% endfor %}
+        </option>
+    {% endfor %}
+        </select>
+    </div>
+      <select
+        hidden
+         name="{{ field_name(form.reviewer) }}"
+        class="form-select py-2"
+        >
+
+        <option value="{{ user.id }}">
+     
+        </option>
+  
+        </select>
+    <button class="btn btn-success m-4 align-self-start" type="submit">Submit</button>
+</div>
+{{ form_end(form)}}
+
+{% endblock %}

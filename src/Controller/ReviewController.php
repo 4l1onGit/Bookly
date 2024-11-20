@@ -3,9 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Book;
-use App\Entity\BookReview;
+
 use App\Entity\Review;
-use App\Form\BookReviewType;
+
 use App\Form\ReviewType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,7 +22,7 @@ class ReviewController extends AbstractController
     }
 
     #[Route("/review", name: "index_review", methods: "GET")]
-    public function index(Request $request): Response
+    public function index(): Response
     {
         $reviewRepo = $this->em->getRepository(Review::class);
         $reviews = $reviewRepo->findAll();
@@ -51,26 +51,62 @@ class ReviewController extends AbstractController
         return $this->render('pages/review/create_review.html.twig', ['form' => $form, 'user' => $this->getUser(), 'books' => $books]);
     }
 
-    #[Route("/review/edit/{id}", name: "edit_review", methods: "PATCH")]
-    public function editReview(Request $request, $id): Response
+    #[Route("/review/update/{id}", name: "update_review")]
+    public function updateReview(Request $request, $id): Response
     {
 
-        $review = new Review();
-        $form = $this->createForm(ReviewType::class, $review);
-        $form->handleRequest($request);
+        $reviewRepo = $this->em->getRepository(Review::class);
+        $review = $reviewRepo->find($id);
+
+        if ($review != null) {
+            $form = $this->createForm(ReviewType::class, $review, ['method' => 'PATCH']);
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $formBook = $form->get('book')->getData();
+                $formReviewer = $form->get('reviewer')->getData();
+                $formRating = $form->get('rating')->getData();
+                $formReviewText = $form->get('review_text')->getData();
+
+                if ($review->getBook() != $formBook && $formBook != null && $formBook != '') {
+                    $review->setBook($formBook);
+                }
+                if ($review->getReviewer() != $formReviewer && $formReviewer != null && $formReviewer != '') {
+                    $review->setBook($formReviewer);
+                }
+                if ($review->getRating() != $formRating && $formRating != null && $formRating != '') {
+                    $review->setBook($formRating);
+                }
+                if ($review->getReviewText() != $formReviewText && $formReviewText != null && $formReviewText != '') {
+                    $review->setBook($formReviewText);
+                }
+
+                $this->em->persist($review);
+                $this->em->flush();
+
+                return $this->redirect('/', 200);
+            }
+        }
 
         $bookRepo = $this->em->getRepository(Book::class);
         $books = $bookRepo->findAll();
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $updatedReview = $form->getData();
-            $this->em->persist($updatedReview);
-            $this->em->flush();
-            return new Response('Form submitted', 200);
-            // return $this->redirect('/',200);
-        }
-        return $this->render('pages/review/edit_review.html.twig', ['form' => $form, 'user' => $this->getUser(), 'books' => $books]);
+        return $this->render('pages/review/update_review.html.twig', ['form' => $form, 'user' => $this->getUser(), 'books' => $books]);
     }
 
-    public function deleteReview(Request $request, $id): Response {}
+    #[Route("/review/delete/{id}", name: "delete_review")]
+    public function deleteReview($id): Response
+    {
+        $reviewRepo = $this->em->getRepository(Review::class);
+        $review = $reviewRepo->find($id);
+        if ($review) {
+            $this->em->remove($review);
+        } else {
+            return new Response('Review not found', 404);
+        }
+
+        $this->em->flush();
+
+        return $this->redirect('/review');
+    }
 }
