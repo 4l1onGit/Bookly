@@ -34,11 +34,11 @@ security:
   # Easy way to control access for large sections of your site
   # Note: Only the *first* access control that matches will be used
   access_control:
-    - { path: /review/create, roles: ROLE_MOD }
-    - { path: /review/update, roles: ROLE_MOD }
+    - { path: /review/create, roles: [ROLE_MOD, ROLE_ADMIN] }
+    - { path: /review/update, roles: [ROLE_MOD, ROLE_ADMIN] }
     - { path: /review/delete, roles: ROLE_ADMIN }
-    - { path: /book/create, roles: ROLE_MOD }
-    - { path: /book/update, roles: ROLE_MOD }
+    - { path: /book/create, roles: [ROLE_MOD, ROLE_ADMIN] }
+    - { path: /book/update, roles: [ROLE_MOD, ROLE_ADMIN] }
     - { path: /book/delete, roles: ROLE_ADMIN }
     - { path: ^/profile, roles: ROLE_USER }
 
