@@ -77,7 +77,7 @@ class BookController extends AbstractController
             $this->em->persist($newBook);
             $this->em->flush();
 
-            return $this->redirect('/');
+            return $this->redirect($this->generateUrl('index_book'));
         }
         return $this->render('pages/book/create_book.html.twig', ['form' => $form, 'user' => $this->getUser()]);
     }
@@ -150,6 +150,6 @@ class BookController extends AbstractController
 
         $this->em->flush();
 
-        return $this->redirect('/');
+        return $this->redirect($this->generateUrl('index_book'));
     }
 }

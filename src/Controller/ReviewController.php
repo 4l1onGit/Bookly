@@ -45,8 +45,7 @@ class ReviewController extends AbstractController
             $newReview = $form->getData();
             $this->em->persist($newReview);
             $this->em->flush();
-            return new Response('Form submitted', 200);
-            // return $this->redirect('/',200);
+            return $this->redirect($this->generateUrl('index_book'));
         }
         return $this->render('pages/review/create_review.html.twig', ['form' => $form, 'user' => $this->getUser(), 'books' => $books]);
     }
@@ -84,7 +83,7 @@ class ReviewController extends AbstractController
                 $this->em->persist($review);
                 $this->em->flush();
 
-                return $this->redirect('/', 200);
+                return $this->redirect($this->generateUrl('index_book'));
             }
         }
 
@@ -97,6 +96,7 @@ class ReviewController extends AbstractController
     #[Route("/review/delete/{id}", name: "delete_review")]
     public function deleteReview($id): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $reviewRepo = $this->em->getRepository(Review::class);
         $review = $reviewRepo->find($id);
         if ($review) {
@@ -107,6 +107,6 @@ class ReviewController extends AbstractController
 
         $this->em->flush();
 
-        return $this->redirect('/review');
+        return $this->redirect($this->generateUrl('index_book'));
     }
 }

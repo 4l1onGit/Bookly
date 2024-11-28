@@ -14,10 +14,10 @@
           {% if app.user %}
           <div>
                     {% if is_granted('ROLE_ADMIN') %}
-                    <a href='/review/delete/{{review.id}}' class='btn btn-danger'><i class='bi bi-trash-fill'></i></a>
+                    <a href="{{ path('delete_review', {'id' : review.id }) }}" class='btn btn-danger'><i class='bi bi-trash-fill'></i></a>
                     {% endif %}
                     {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_MOD') %}
-                    <a href='/review/update/{{review.id}}' class='btn btn-success'><i class='bi bi-pencil-square'></i></a>
+                    <a href="{{ path('update_review', {'id' : review.id }) }}" class='btn btn-success'><i class='bi bi-pencil-square'></i></a>
                     {% endif %}
           </div>
            {% endif %}
