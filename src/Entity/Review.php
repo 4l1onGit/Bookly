@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\ReviewRepository;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
@@ -22,9 +23,16 @@ class Review
     private ?User $reviewer = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Cannot be blank!')]
     private ?string $review_text = null;
 
     #[ORM\Column]
+    #[Assert\Range(
+        min: 1,
+        max: 5,
+        notInRangeMessage: 'You must rate 1-5',
+    )]
+    #[Assert\NotBlank(message: 'I need a rating')]
     private ?int $rating = null;
 
     public function getId(): ?int

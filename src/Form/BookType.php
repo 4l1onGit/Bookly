@@ -18,6 +18,7 @@ class BookType extends AbstractType
             ->add('pages')
             ->add('genre')
             ->add('bookCover', FileType::class)
+            ->add('summary')
         ;
     }
 

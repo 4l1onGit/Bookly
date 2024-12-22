@@ -10,13 +10,17 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class BookController extends AbstractController
 {
     private $em;
-    public function __construct(EntityManagerInterface $em)
+    private $validator;
+
+    public function __construct(EntityManagerInterface $em,  ValidatorInterface $validator)
     {
         $this->em = $em;
+        $this->validator = $validator;
     }
 
 
@@ -76,16 +80,18 @@ class BookController extends AbstractController
 
             $this->em->persist($newBook);
             $this->em->flush();
-
             return $this->redirect($this->generateUrl('index_book'));
+        } else if ($form->isSubmitted() && !$form->isValid()) {
+            $errors = $this->validator->validate($form->getData());
+            return $this->render('pages/book/create_book.html.twig', ['form' => $form, 'errors' => $errors]);
         }
-        return $this->render('pages/book/create_book.html.twig', ['form' => $form, 'user' => $this->getUser()]);
+        return $this->render('pages/book/create_book.html.twig', ['form' => $form]);
     }
 
     #[Route("/book/update/{id}", name: "update_book", methods: ['GET', 'PATCH'])]
     public function updateBook($id, Request $request): Response
     {
-        $errors = [];
+        $error = [];
         $bookRepo = $this->em->getRepository(Book::class);
         $book = $bookRepo->find($id);
         $updatedBook = new Book();
@@ -98,6 +104,7 @@ class BookController extends AbstractController
                 $formBookTitle = $form->get('book_title')->getData();
                 $formAuthor = $form->get('author')->getData();
                 $formGenre = $form->get('genre')->getData();
+                $formSummary = $form->get('summary')->getData();
                 $formPages = $form->get('pages')->getData();
 
                 if ($book->getBookTitle() != $formBookTitle && $formBookTitle != null && $formBookTitle != '') {
@@ -123,16 +130,22 @@ class BookController extends AbstractController
                 } else {
                     $error[] = "Author not valid, Author not updated";
                 }
+                if ($book->getSummary() != $formSummary && $formSummary != null && $formSummary != '') {
+                    $book->setSummary($formSummary);
+                } else {
+                    $error[] = "Summary not valid, Summary not updated";
+                }
 
 
                 $this->em->persist($book);
                 $this->em->flush();
+                return $this->redirect($this->generateUrl('index_book'));
+            } else {
+                return $this->render('pages/book/update_book.html.twig', ['form' => $form, 'book' => $book, 'error' => $error]);
             }
         } else {
-            return new Response('Book not found', 404);
+            return $this->redirect($this->generateUrl('index_book'));
         }
-
-        return $this->render('pages/book/update_book.html.twig', ['form' => $form, 'book' => $book, 'user' => $this->getUser()]);
     }
 
 

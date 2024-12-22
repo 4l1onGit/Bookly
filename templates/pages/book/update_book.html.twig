@@ -52,6 +52,15 @@
         class="form-control py-2"
         ></input>
     </div>
+     <div class="container-fluid">
+        <label class="py-2" for="{{ field_name(form.summary) }}">{{ field_label(form.summary)}}:</label>
+        <textarea
+        name="{{ field_name(form.summary) }}"
+        value="{{ book.summary }}"
+        placeholder="{{ book.summary }}"
+        class="form-control py-2"
+        ></textarea>
+    </div>
     <button class="btn btn-success m-4 align-self-start" type="submit">Submit</button>
 </div>
 {{ form_end(form)}}

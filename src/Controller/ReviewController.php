@@ -12,13 +12,17 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ReviewController extends AbstractController
 {
     private $em;
-    public function __construct(EntityManagerInterface $em)
+    private $validator;
+
+    public function __construct(EntityManagerInterface $em, ValidatorInterface $validator)
     {
         $this->em = $em;
+        $this->validator = $validator;
     }
 
     #[Route("/review", name: "index_review", methods: "GET")]
@@ -27,13 +31,12 @@ class ReviewController extends AbstractController
         $reviewRepo = $this->em->getRepository(Review::class);
         $reviews = $reviewRepo->findAll();
 
-        return $this->render('pages/review/index_review.html.twig', ['reviews' => $reviews, 'user' => $this->getUser()]);
+        return $this->render('pages/review/index_review.html.twig', ['reviews' => $reviews]);
     }
 
     #[Route("/review/create", name: "create_review", methods: "POST")]
     public function createReview(Request $request): Response
     {
-
         $review = new Review();
         $form = $this->createForm(ReviewType::class, $review);
         $form->handleRequest($request);
@@ -45,9 +48,13 @@ class ReviewController extends AbstractController
             $newReview = $form->getData();
             $this->em->persist($newReview);
             $this->em->flush();
+
             return $this->redirect($this->generateUrl('index_book'));
+        } else if ($form->isSubmitted() && !$form->isValid()) {
+            $errors = $this->validator->validate($form->getData());
+            return $this->render('pages/review/create_review.html.twig', ['form' => $form, 'books' => $books, 'errors' => $errors, 'user' => $this->getUser()]);
         }
-        return $this->render('pages/review/create_review.html.twig', ['form' => $form, 'user' => $this->getUser(), 'books' => $books]);
+        return $this->render('pages/review/create_review.html.twig', ['form' => $form, 'books' => $books, 'user' => $this->getUser()]);
     }
 
     #[Route("/review/update/{id}", name: "update_review")]

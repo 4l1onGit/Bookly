@@ -3,6 +3,9 @@
 {% block title %} Create Book {% endblock %}
 
 {% block body %}
+
+
+
 {{ form_start(form, {'method': 'POST'})}}
 <div class="d-flex p-4 flex-column justify-content-center align-items-center">
     <div class="container-fluid">
@@ -52,10 +55,28 @@
         class="form-control py-2"
         ></input>
     </div>
+    <div class="container-fluid">
+        <label class="py-2" for="{{ field_name(form.summary) }}">{{ field_label(form.summary)}}:</label>
+        <textarea
+        name="{{ field_name(form.summary) }}"
+        value="{{ field_value(form.summary) }}"
+        placeholder="{{ field_label(form.summary) }}"
+        class="form-control py-2"
+        ></textarea>
+    </div>
     <button class="btn btn-success m-4 align-self-start" type="submit">Submit</button>
 </div>
 {{ form_end(form)}}
 
+{% if errors|default %}
+
+{% for err in errors %}
+<div class="alert alert-danger" role="alert">
+  {{ err.message }}
+</div>
+{% endfor %}
+
+{% endif %}
 
 
 {% endblock %}

@@ -18,15 +18,19 @@ class Book
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'A good book usually has a title!')]
     private ?string $book_title = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Who wrote me?')]
     private ?string $author = null;
 
     #[ORM\Column]
+    #[Assert\NotNull(message: 'You must specify the pages')]
     private ?int $pages = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Remember the genre!')]
     private ?string $genre = null;
 
     #[ORM\Column(length: 255)]
