@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Author Books {% endblock %}
+{% block body  %}
+
+    <div class="col-12 py-4">
+        <h1 class="text-center"><span class="text-primary">Authors</span> Books</h1>
+        <div class="row row-cols-xl-5 row-cols-md-3 row-cols-1 py-4 gap-2 justify-content-center">
+
+
+            {% for book in books %}
+
+                <div class="card col shadow-lg rounded-4 h-60">
+                    <img src='{{book.volumeInfo.imageLinks.thumbnail | default(null)}}' class="card-img-top rounded-top-4 w-100" alt='book cover {{book.volumeInfo.title}}' style="height: 60%">
+                    <div class="card-body bg-white">
+                        <h5 class="card-title">{{book.volumeInfo.title | default('no title')}}</h5>
+                        <p class="card-text">
+                            {% for author in book.volumeInfo.authors | default(null) %}
+                                {{author}}
+                            {% endfor %}
+                        </p>
+                        <h5><span class="badge bg-secondary">
+                            {% if book.volumeInfo.categories | default(null) %}
+                                {% for genre in book.volumeInfo.categories %}
+                                    {{ genre }}
+                                {% endfor %}
+                            {% else %}
+                                None
+                            {% endif %}
+                        </span> <span class="badge bg-secondary">{{book.volumeInfo.pageCount | default(0)}} Pages</span></h5>
+                        <a href="{{ path('create_library', {'id': book.id }) }}" class="btn btn-primary">Add to Bookly</a>
+                    </div>
+                </div>
+
+            {% endfor %}
+        </div>
+    </div>
+
+
+
+
+
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Google Book Library {% endblock %}
+{% block body  %}
+
+    <div class="col-12 py-4">
+        <h1 class="text-center"><span class="text-primary">Google</span> Book Library</h1>
+        <h4 class="font-bold text-center">Page: {{ page }} / {{totalPages}}</h4>
+        <h6  class="text-center" ><a class="p-2" href="{{ path('list_library', { page: page-1  }) }}">Previous Page </a> <a class="p-2" href="{{ path('list_library', { page: page+1  }) }}">Next Page </a></h6>
+    <div class="row row-cols-xl-5 row-cols-md-3 row-cols-1 py-4 gap-2 justify-content-center">
+
+
+
+
+    {% for book in books %}
+
+            <div class="card col shadow-lg rounded-4 h-60">
+                <img src='{{book.volumeInfo.imageLinks.thumbnail}}' class="card-img-top rounded-top-4 w-100" alt='book cover {{book.volumeInfo.title}}' style="height: 60%">
+                <div class="card-body bg-white">
+                    <h5 class="card-title">{{book.volumeInfo.title}}</h5>
+                    <p class="card-text">
+                        {% for author in book.volumeInfo.authors | default(null) %}
+                        <a href="{{ path("list_author_books", { q: author }) }}">{{author}}</a>
+                        {% endfor %}
+                    </p>
+                    <h5><span class="badge bg-secondary">
+                            {% if book.volumeInfo.categories | default(null) %}
+                            {% for genre in book.volumeInfo.categories %}
+                                {{ genre }}
+                            {% endfor %}
+                                {% else %}
+                                None
+                            {% endif %}
+                        </span> <span class="badge bg-secondary">{{book.volumeInfo.pageCount}} Pages</span></h5>
+                    <a href="{{ path('create_library', {'id': book.id }) }}" class="btn btn-primary">Add to Bookly</a>
+
+                    <a href="{{ path('book_isbn', {'id': book.volumeInfo.industryIdentifiers[1].identifier | default(0)}) }}" class="btn btn-primary">More Info</a>
+
+                </div>
+            </div>
+
+    {% endfor %}
+    </div>
+    </div>
+
+
+
+
+
+{% endblock %}

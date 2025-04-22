@@ -1,0 +1,82 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Add Book {% endblock %}
+
+{% block body %}
+
+
+
+{{ form_start(form, {'method': 'POST'})}}
+<div class="d-flex p-4 flex-column justify-content-center align-items-center">
+    <div class="container-fluid">
+        <label class="py-2" for="{{ field_name(form.book_title) }}">{{ field_label(form.book_title)}}:</label>
+        <input
+                name="{{ field_name(form.book_title) }}"
+                value="{{ field_value(form.book_title) }}"
+                placeholder="{{ field_label(form.book_title) }}"
+                class="form-control py-2"
+        />
+    </div>
+    <div class="container-fluid">
+        <label class="py-2" for="{{ field_name(form.author) }}">{{ field_label(form.author)}}:</label>
+        <input
+                name="{{ field_name(form.author) }}"
+                value="{{ field_value(form.author) }}"
+                placeholder="{{ field_label(form.author) }}"
+                class="form-control py-2"
+        />
+    </div>
+    <div class="container-fluid">
+        <label class="py-2" for="{{ field_name(form.pages) }}">{{ field_label(form.pages)}}:</label>
+        <input
+                name="{{ field_name(form.pages) }}"
+                type="number"
+                value="{{ field_value(form.pages) }}"
+                placeholder="{{ field_label(form.pages) }}"
+                class="form-control py-2"
+        />
+    </div>
+    <div class="container-fluid">
+        <label class="py-2" for="{{ field_name(form.genre) }}">{{ field_label(form.genre)}}:</label>
+        <input
+                name="{{ field_name(form.genre) }}"
+                value="{{ field_value(form.genre) }}"
+                placeholder="{{ field_label(form.genre) }}"
+                class="form-control py-2"
+        />
+    </div>
+    <div class="container-fluid">
+        <label class="py-2" for="{{ field_name(form.bookCover) }}">{{ field_label(form.bookCover)}}:</label>
+        <input
+
+                name="{{ field_name(form.bookCover) }}"
+                value="{{ field_value(form.bookCover) }}"
+                placeholder="{{ field_label(form.bookCover) }}"
+                class="form-control py-2"
+        />
+    </div>
+    <div class="container-fluid">
+        <label class="py-2" for="{{ field_name(form.summary) }}">{{ field_label(form.summary)}}:</label>
+        <textarea
+                name="{{ field_name(form.summary) }}"
+
+                placeholder="{{ field_label(form.summary) }}"
+                class="form-control py-2"
+        >  {{ field_value(form.summary) }}</textarea>
+    </div>
+    <button class="btn btn-success m-4 align-self-start" type="submit">Submit</button>
+</div>
+{{ form_end(form)}}
+
+{% if errors|default %}
+
+    {% for err in errors %}
+        <div class="alert alert-danger" role="alert">
+            {{ err.message }}
+        </div>
+    {% endfor %}
+
+{% endif %}
+
+
+{% endblock %}

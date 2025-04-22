@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} {{book.title | default('No title')}}  {% endblock %}
+
+{% block body %}
+    <div class="container py-4">
+        <div class="row align-items-top">
+            <div class="col col-12 col-md-6">
+                <div class="d-flex flex-column align-items-center">
+                    <h2 class="py-4">{{book.title | default('No title')}}</h2>
+                    <h5>Subtitle:</h5>
+                    <p>{{book.subtitle | default('No subtitle')}}</p>
+                </div>
+            </div>
+            <div class="col col-12 col-md-6">
+                <h2 class="d-flex align-items-center justify-content-between">Details</h2>
+                <ul class="list-group">
+                    <li class="list-group-item">
+                    <p>Pages: {{ book.number_of_pages | default(0) }}</p>
+                    <p>Publish Date: {{ book.publish_date | default('No date available') }}</p>
+                    </li>
+                    <li class="list-group-item">
+                    <h4>Publishers: </h4>
+                    {% for publisher in book.publishers | default(null) %}
+
+                            <div class="d-flex flex-column">
+                                <p>{{publisher.name}}</p>
+                            </div>
+
+                    {% endfor %}
+                    </li>
+                    <p>Authors:</p>
+                    {% for author in book.authors | default(null) %}
+                        <li class="list-group-item">
+                            <div class="d-flex flex-column">
+                                <a href="{{author.url }}">{{author.name}}</a>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

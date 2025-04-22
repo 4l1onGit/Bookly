@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
+use JMS\Serializer\Annotation as JMS;
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
 class Book
@@ -33,13 +34,14 @@ class Book
     #[Assert\NotBlank(message: 'Remember the genre!')]
     private ?string $genre = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 1000)]
     private String $bookCover;
 
     /**
      * @var Collection<int, Review>
      */
     #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'book', orphanRemoval: true)]
+    #[JMS\Exclude()]
     private Collection $reviews;
 
     #[ORM\Column(length: 255, nullable: true)]
