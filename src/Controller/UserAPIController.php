@@ -33,7 +33,6 @@ class UserAPIController extends AbstractFOSRestController
 
     #[Rest\Get('api/v1/users', name: 'users_list')]
     public function getUsers() {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $users = $this->userRepo->findAll();
         $view = $this->view($users, 200);
         return $this->handleView($view);
