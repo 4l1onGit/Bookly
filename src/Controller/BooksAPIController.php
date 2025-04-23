@@ -79,7 +79,7 @@ class BooksAPIController extends AbstractFOSRestController
             $this->em->persist($newBook);
             $this->em->flush();
 
-            $view = $this->view(['message' => 'Book successfully created'], 201,  ['Location' => $request->getSchemeAndHttpHost() . '/api/v1/books/' . $newBook->getId()]);
+            $view = $this->view($newBook, 201,  ['Location' => $request->getSchemeAndHttpHost() . '/api/v1/books/' . $newBook->getId()]);
         } else if ($form->isSubmitted() && !$form->isValid()) {
 
             $view = $this->view($form, 400);
@@ -105,7 +105,7 @@ class BooksAPIController extends AbstractFOSRestController
                 $this->em->persist($newBook);
                 $this->em->flush();
 
-                $view = $this->view(['message' => 'Book successfully updated'], 201,  ['Location' => $request->getSchemeAndHttpHost() . '/api/v1/books/' . $newBook->getId()]);
+                $view = $this->view($book, 201,  ['Location' => $request->getSchemeAndHttpHost() . '/api/v1/books/' . $newBook->getId()]);
             } else if ($form->isSubmitted() && !$form->isValid()) {
 
                 $view = $this->view($form, 400);
@@ -125,7 +125,7 @@ class BooksAPIController extends AbstractFOSRestController
         $book = $this->bookRepo->find($b_id);
         if ($book) {
             $this->em->remove($book);
-            $view = $this->view(['message' => 'Book successfully deleted'], 200);
+            $view = $this->view(null, 204);
             $this->em->flush();
         } else {
             $view = $this->view(['message' => 'Book not found'], 404);
@@ -182,7 +182,7 @@ class BooksAPIController extends AbstractFOSRestController
                 $review->setBook($book);
                 $this->em->persist($review);
                 $this->em->flush();
-                $view = $this->view(['message' => 'Review successfully created'], 201);
+                $view = $this->view($review, 201);
             } else {
                 $view = $this->view($form, 400);
             }
@@ -248,12 +248,14 @@ class BooksAPIController extends AbstractFOSRestController
                     if($this->isGranted('ROLE_ADMIN')) {
                         $this->em->remove($review);
                         $this->em->flush();
-                        $view = $this->view(['message' => 'Review successfully deleted'], 200);
+                        $view = $this->view(null, 204);
                     } else {
                         $view = $this->view(['error' => 'You can not delete this review'], 403);
                     }
                 } else {
-                    $view = $this->view(['error' => 'You can not delete this review'], 403);
+                    $this->em->remove($review);
+                    $this->em->flush();
+                    $view = $this->view(null, 204);
                 }
 
             }

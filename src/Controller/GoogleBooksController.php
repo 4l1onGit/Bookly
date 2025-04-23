@@ -30,7 +30,7 @@ class GoogleBooksController extends  AbstractController
 
     #[Route("/library", name: "list_library",  methods: "GET")]
     public function booksAction(Request $request) {
-        $maxResults = $request->query->getInt('maxResults', 10);
+        $maxResults = $request->query->getInt('maxResults', 20);
         $start = $request->query->getInt('page', 0);
         $client = new Client(['base_uri' => 'https://www.googleapis.com/books/v1/']);
         try {

@@ -71,17 +71,18 @@ class ReviewsAPIController extends AbstractFOSRestController
     {
         $review = new Review();
         $view = null;
+
         $form = $this->createForm(ReviewAPIType::class, $review, array('method' => 'POST'));
 
         $form->submit(json_decode($request->getContent(), true));
 
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $newReview = $form->getData();
-            $this->em->persist($newReview);
+            $review->setReviewer($this->getUser());
+            $this->em->persist($review);
             $this->em->flush();
 
-            $view = $this->view(['message' => 'Review successfully created'], 201,  ['Location' => $request->getSchemeAndHttpHost() . '/api/v1/reviews/' . $newReview->getId()]);
+            $view = $this->view($review, 201,  ['Location' => $request->getSchemeAndHttpHost() . '/api/v1/reviews/' . $review->getId()]);
         } else if ($form->isSubmitted() && !$form->isValid()) {
 
             $view = $this->view($form, 400);
@@ -99,12 +100,10 @@ class ReviewsAPIController extends AbstractFOSRestController
     public function updateReview($id, Request $request): Response
     {
 
-        try {
-            $reviewRepo = $this->em->getRepository(Review::class);
-            $review = $reviewRepo->find($id);
-        } catch (Exception $e) {
-            $view = $this->view(['error' => 'Error finding review', 'code' => 500], 500);
-        }
+
+        $reviewRepo = $this->em->getRepository(Review::class);
+        $review = $reviewRepo->find($id);
+        $reviewUser = $review->getReviewer();
 
         if ($review != null) {
             $form = $this->createForm(ReviewAPIType::class, $review, array('method' => 'PUT'));
@@ -112,11 +111,11 @@ class ReviewsAPIController extends AbstractFOSRestController
             $form->submit(json_decode($request->getContent(), true));
 
             if ($form->isSubmitted() && $form->isValid()) {
-                $newReview = $form->getData();
-                $this->em->persist($newReview);
+                $review->setReviewer($reviewUser);
+                $this->em->persist($review);
                 $this->em->flush();
 
-                $view = $this->view(['message' => 'Review successfully updated'], 201,  ['Location' => $request->getSchemeAndHttpHost() . '/api/v1/reviews/' . $newReview->getId()]);
+                $view = $this->view($review, 201,  ['Location' => $request->getSchemeAndHttpHost() . '/api/v1/reviews/' . $review->getId()]);
             } else if ($form->isSubmitted() && !$form->isValid()) {
 
                 $view = $this->view($form, 400);
@@ -139,7 +138,7 @@ class ReviewsAPIController extends AbstractFOSRestController
         $review = $reviewRepo->find($id);
         if ($review) {
             $this->em->remove($review);
-            $view = $this->view(['message' => 'Review successfully deleted'], 200);
+            $view = $this->view( null, 204);
             $this->em->flush();
         } else {
             $view = $this->view(['message' => 'Review not found'], 404);
