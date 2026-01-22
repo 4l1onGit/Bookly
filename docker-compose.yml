@@ -1,0 +1,46 @@
+version: "3.9"
+
+services:
+  php:
+    build:
+      context: ./docker/php
+    container_name: bookly-php
+    volumes:
+      - ./:/var/www/html
+    networks:
+      - bookly-net
+
+  nginx:
+    image: nginx:latest
+    container_name: bookly-nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+    networks:
+      - bookly-net
+
+  mysql:
+    image: mysql:8.0
+    container_name: bookly-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: bookly
+      MYSQL_USER: bookly
+      MYSQL_PASSWORD: bookly
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - bookly-net
+
+networks:
+  bookly-net:
+
+volumes:
+  mysql_data:
