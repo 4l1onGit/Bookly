@@ -8,9 +8,9 @@
     <h2 class="text-center">Books</h2>
     <div class="row row-cols-xl-5 row-cols-md-3 row-cols-1 py-4 gap-2 justify-content-center">
         {% for book in books %}
-          <div class="col">
-            <div class="card shadow-lg rounded-4 my-2 bg-dark bg-opacity-75">
-                <img src='{{book.BookCover}}' class="card-img-top img-fluid mx-auto d-block" alt='book cover {{book.BookTitle}}' style="width: 10rem; height: 10rem;">
+
+            <div class="card col shadow-lg rounded-4 my-2">
+                <img src='{{book.BookCover}}' class="card-img-top img-fluid mx-auto d-block" alt='book cover {{book.BookTitle}}' style="height: 60%">
                 <div class="card-body bg-white">
                     <h5 class="card-title">{{book.BookTitle}}</h5>
                     <p class="card-text">{{book.Author}}</p>
@@ -24,7 +24,7 @@
                     {% endif %}
                 </div>
             </div>
-        </div>
+
         {% endfor %}
     </div>
 </div>

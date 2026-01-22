@@ -88,6 +88,7 @@ class BookController extends AbstractController
         return $this->render('pages/book/create_book.html.twig', ['form' => $form]);
     }
 
+
     #[Route("/book/update/{id}", name: "update_book", methods: ['GET', 'PATCH'])]
     public function updateBook($id, Request $request): Response
     {

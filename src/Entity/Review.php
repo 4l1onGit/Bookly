@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\ReviewRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
+
 
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
 class Review
@@ -14,12 +16,16 @@ class Review
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'reviews')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Book $book = null;
 
     #[ORM\ManyToOne(inversedBy: 'reviews')]
     #[ORM\JoinColumn(nullable: false)]
+    #[JMS\Exclude]
+    private ?Book $book = null;
+
+
+    #[ORM\ManyToOne(inversedBy: 'reviews')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[JMS\MaxDepth(1)]
     private ?User $reviewer = null;
 
     #[ORM\Column(length: 255)]

@@ -10,6 +10,17 @@ security:
         class: App\Entity\User
         property: email
   firewalls:
+    login:
+      pattern: ^/api/v1/login
+      stateless: true
+      json_login:
+        check_path: /api/v1/login
+        success_handler: lexik_jwt_authentication.handler.authentication_success
+        failure_handler: lexik_jwt_authentication.handler.authentication_failure
+    api:
+      pattern: ^/api
+      stateless: true
+      jwt: ~
     dev:
       pattern: ^/(_(profiler|wdt)|css|images|js)/
       security: false
@@ -21,6 +32,7 @@ security:
         check_path: login
       lazy: true
       provider: app_user_provider
+
     secured_area:
       form_login:
         enable_csrf: true
@@ -34,6 +46,11 @@ security:
   # Easy way to control access for large sections of your site
   # Note: Only the *first* access control that matches will be used
   access_control:
+    - { path: ^/api/v1/login, roles: PUBLIC_ACCESS }
+    - { path: ^/api/v1/books, roles: PUBLIC_ACCESS, method: [GET]}
+    - { path: ^/api/v1/reviews, roles: PUBLIC_ACCESS, method: [GET]}
+    - { path: ^/api/v1/books, roles: [ROLE_USER], method: [ POST, PUT, DELETE]}
+    - { path: ^/api/v1/reviews, roles: [ROLE_USER], method: [ POST, PUT, DELETE]}
     - { path: /review/create, roles: [ROLE_MOD, ROLE_ADMIN, ROLE_USER] }
     - { path: /review/update, roles: [ROLE_MOD, ROLE_ADMIN] }
     - { path: /review/delete, roles: ROLE_ADMIN }
