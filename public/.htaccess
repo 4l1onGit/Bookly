@@ -1,0 +1,18 @@
+<IfModule mod_negotiation.c>
+    Options -MultiViews
+</IfModule>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Redirect to URI without front controller to prevent duplicate content
+    RewriteCond %{REQUEST_URI} ^/index\.php/(.*)$
+    RewriteRule ^index\.php/(.*)$ /$1 [L,R=301]
+
+    # If the requested filename exists, serve it directly
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteRule .? - [L]
+
+    # Otherwise, route all requests to index.php
+    RewriteRule .? index.php [L]
+</IfModule>
