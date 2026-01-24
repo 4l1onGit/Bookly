@@ -4,6 +4,10 @@ controllers:
     namespace: App\Controller
   type: attribute
 
+api_controllers:
+  resource: ../src/Controller/
+  type: attribute
+
 review_create:
   path: /review/create
   controller: App\Controller\ReviewController::createReview
@@ -19,7 +23,6 @@ create_book:
 view_book:
   path: /book/{id}
   controller: App\Controller\BookController::viewBook
-
 
 api_login:
   path: /api/v1/login
