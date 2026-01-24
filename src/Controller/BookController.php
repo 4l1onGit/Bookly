@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Book;
 use App\Form\BookType;
+use App\Service\SupabaseStorage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -16,11 +17,13 @@ class BookController extends AbstractController
 {
     private $em;
     private $validator;
+    private $supabaseStorage;
 
-    public function __construct(EntityManagerInterface $em,  ValidatorInterface $validator)
+    public function __construct(EntityManagerInterface $em,  ValidatorInterface $validator, SupabaseStorage $supabaseStorage)
     {
         $this->em = $em;
         $this->validator = $validator;
+        $this->supabaseStorage = $supabaseStorage;
     }
 
 
@@ -68,13 +71,14 @@ class BookController extends AbstractController
                 $fileExt = $bookImage->guessExtension();
                 $newFilename = uniqid() . '.' . $fileExt;
 
-
                 try {
-                    $bookImage->move($this->getParameter('kernel.project_dir') . '/public/books', $newFilename);
+                    $publicUrl = $this->supabaseStorage->upload('books/' . $newFilename, file_get_contents($bookImage->getPathname()));
+                    $newBook->setBookCover($publicUrl);
+                    // $bookImage->move($this->getParameter('kernel.project_dir') . '/public/books', $newFilename);
                 } catch (FileException $e) {
                     return new Response($e->getMessage());
                 }
-                $newBook->setBookCover('/books/' . $newFilename);
+               
             }
 
 
