@@ -3,8 +3,9 @@
 Bookly is a full‑stack web application built with Symfony, featuring a complete REST API, JWT authentication, external API integrations, and a Twig‑based frontend.
 Originally developed as a university project, it has since been refined into a production‑style application demonstrating real‑world backend architecture and modern PHP development practices.
 
-Live Link: http://bookly-api-b82d6a0cb81b.herokuapp.com/
-(WIP) Next.js Frontend: https://github.com/4l1onGit/bookly-next-frontend
+[Live Link](http://bookly-api-b82d6a0cb81b.herokuapp.com/)
+
+[WIP Next.js Frontend](https://github.com/4l1onGit/bookly-next-frontend)
 
 # Features #
 
