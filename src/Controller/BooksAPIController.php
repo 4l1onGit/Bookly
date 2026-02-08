@@ -13,7 +13,9 @@ use Exception;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use App\Service\SupabaseStorage;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use Symfony\Component\Routing\Annotation\Route;
 
 class BooksAPIController extends AbstractFOSRestController
 {
@@ -23,13 +25,15 @@ class BooksAPIController extends AbstractFOSRestController
     private $bookRepo;
 
     private $reviewRepo;
+    private $supabaseStorage;
 
-    public function __construct(EntityManagerInterface $em, ValidatorInterface $validator, BookRepository $bookRepo, ReviewRepository $reviewRepo)
+    public function __construct(EntityManagerInterface $em, ValidatorInterface $validator, BookRepository $bookRepo, ReviewRepository $reviewRepo, SupabaseStorage $supabaseStorage)
     {
         $this->em = $em;
         $this->validator = $validator;
         $this->bookRepo = $bookRepo;
         $this->reviewRepo = $reviewRepo;
+         $this->supabaseStorage = $supabaseStorage;
     }
 
     #[Rest\Get('api/v1/books', name: 'books_list')]
@@ -263,5 +267,19 @@ class BooksAPIController extends AbstractFOSRestController
 
 
         return $this->handleView($view);
+    }
+
+    #[Rest\Post('api/v1/books/upload', name: 'image_upload', options: ['expose' => true])]
+    public function uploadBookCover(Request $request) {
+        $image = $request->files->get('image');
+        if (!$image) {
+            return $this->json(['error' => 'No image file provided'], 400);
+        }
+        try {
+            $imagePath = $this->supabaseStorage->upload('books/' . uniqid() . '.' . $image->guessExtension(), file_get_contents($image->getPathname()));
+            return $this->json(['url' => $imagePath], 201);
+        } catch (Exception $e) {
+            return $this->json(['err' => $e->getMessage()], 500);
+        }
     }
 }

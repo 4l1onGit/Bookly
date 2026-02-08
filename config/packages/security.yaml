@@ -49,10 +49,12 @@ security:
   # Note: Only the *first* access control that matches will be used
   access_control:
     - { path: ^/api/v1/login, roles: PUBLIC_ACCESS }
-    - { path: ^/api/v1/books, roles: PUBLIC_ACCESS, method: [GET]}
-    - { path: ^/api/v1/reviews, roles: PUBLIC_ACCESS, method: [GET]}
-    - { path: ^/api/v1/books, roles: [ROLE_USER], method: [ POST, PUT, DELETE]}
-    - { path: ^/api/v1/reviews, roles: [ROLE_USER], method: [ POST, PUT, DELETE]}
+    - { path: ^/api/v1/books/upload, roles: PUBLIC_ACCESS, methods: [OPTIONS] } 
+    - { path: ^/api/v1/books/upload, roles: [ROLE_USER], methods: [POST] }
+    - { path: ^/api/v1/books, roles: [ROLE_USER], methods: [POST, PUT, DELETE]}
+    - { path: ^/api/v1/books, roles: PUBLIC_ACCESS, methods: [GET]}
+    - { path: ^/api/v1/reviews, roles: PUBLIC_ACCESS, methods: [GET]}
+    - { path: ^/api/v1/reviews, roles: [ROLE_USER], methods: [POST, PUT, DELETE]}
     - { path: /review/create, roles: [ROLE_MOD, ROLE_ADMIN, ROLE_USER] }
     - { path: /review/update, roles: [ROLE_MOD, ROLE_ADMIN] }
     - { path: /review/delete, roles: ROLE_ADMIN }

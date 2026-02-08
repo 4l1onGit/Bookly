@@ -31,7 +31,7 @@ class RegistrationAPIController extends AbstractFOSRestController
 
             // encode the plain password
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
-
+            $user->setRoles(['ROLE_USER']);
             $entityManager->persist($user);
             $entityManager->flush();
                 $view = $this->view(['message' => 'User registered successfully'], 201);
