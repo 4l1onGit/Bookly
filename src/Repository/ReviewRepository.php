@@ -22,7 +22,17 @@ class ReviewRepository extends ServiceEntityRepository
             ->setMaxResults($recordsPerPage)
             ->getQuery()
             ->getResult();
-    }   
+    }  
+    
+    public function findByPageByBook($book, $offset, $recordsPerPage) {
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.book = :book')
+            ->setParameter('book', $book)
+            ->setFirstResult($offset)
+            ->setMaxResults($recordsPerPage)
+            ->getQuery()
+            ->getResult();
+    }
 
 //    /**
 //     * @return Review[] Returns an array of Review objects

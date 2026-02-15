@@ -33,17 +33,17 @@ class ReviewsAPIController extends AbstractFOSRestController
     {
 
         $page = max(1, (int) $request->query->get('page', 1)); 
-        $limit = max(1, (int) $request->query->get('limit', 10));
+        $limit = max(1, (int) $request->query->get('limit', 9));
         try {
             $reviewsRepo = $this->em->getRepository(Review::class);
             $reviews = $reviewsRepo->findByPage(($page - 1) * $limit, $limit);
-      
+            $totalReviews = count($reviewsRepo->findAll());
         } catch (Exception $e) {
             return $this->json(['err' => $e->getMessage()], 500);
         }
 
 
-        $view = $this->view($reviews, 200);
+        $view = $this->view(["data" => $reviews, "page" => $page, "limit" => $limit, "total" => $totalReviews], 200);
 
         return $this->handleView($view);
     }
@@ -57,7 +57,7 @@ class ReviewsAPIController extends AbstractFOSRestController
             $reviews = $reviewsRepo->findById($id);
             $this->em->flush();
         } catch (Exception $e) {
-            return $this->json(['err' => $e], 500);
+            return $this->json(['err' => $e->getMessage()], 500);
         }
        
         $view = $this->view($reviews, 200);

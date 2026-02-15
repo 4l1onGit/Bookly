@@ -140,12 +140,17 @@ class BooksAPIController extends AbstractFOSRestController
     }
 
     #[Rest\Get('api/v1/books/{b_id}/reviews', name: 'books_reviews_list')]
-    public function getReviews($b_id) {
+    public function getReviews(Request $request, $b_id) {
         $book = $this->bookRepo->find($b_id);
+        $page = max(1, (int) $request->query->get('page', 1));
+        $limit = max(1, (int) $request->query->get('limit', 6));
+
         if($book == null) {
             $view = $this->view(['error' => 'Book reviews not found'], 404);
         } else {
-            $view = $this->view($book->getReviews(), 200);
+            $reviews = $this->reviewRepo->findByPageByBook($book, ($page - 1) * $limit, $limit);
+            $total = count($this->reviewRepo->findBy(['book' => $book]));
+            $view = $this->view(["data" => $reviews, "total" => $total, "page" => $page, "limit" => $limit], 200);
 
         }
         return $this->handleView($view);
