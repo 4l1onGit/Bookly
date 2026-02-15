@@ -19,7 +19,6 @@ class Review
 
     #[ORM\ManyToOne(inversedBy: 'reviews')]
     #[ORM\JoinColumn(nullable: false)]
-    #[JMS\Exclude]
     private ?Book $book = null;
 
 

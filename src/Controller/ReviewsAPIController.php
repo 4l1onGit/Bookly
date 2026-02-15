@@ -56,9 +56,7 @@ class ReviewsAPIController extends AbstractFOSRestController
         } catch (Exception $e) {
             return $this->json(['err' => $e], 500);
         }
-
-
-
+       
         $view = $this->view($reviews, 200);
 
         return $this->handleView($view);
@@ -105,6 +103,11 @@ class ReviewsAPIController extends AbstractFOSRestController
         $review = $reviewRepo->find($id);
         $reviewUser = $review->getReviewer();
 
+        if($reviewUser !== $this->getUser() && !$this->isGranted('ROLE_ADMIN')) {
+            $view = $this->view(['error' => 'You can only update your own reviews'], 403);
+            return $this->handleView($view);
+        }
+
         if ($review != null) {
             $form = $this->createForm(ReviewAPIType::class, $review, array('method' => 'PUT'));
 
@@ -136,6 +139,24 @@ class ReviewsAPIController extends AbstractFOSRestController
 
         $reviewRepo = $this->em->getRepository(Review::class);
         $review = $reviewRepo->find($id);
+        $reviewUser = $review->getReviewer();
+        if($reviewUser !== $this->getUser() && !$this->isGranted('ROLE_ADMIN')) {
+            $view = $this->view(['error' => 'You can only delete your own reviews'], 403);
+            return $this->handleView($view);
+        }
+
+         if ($review == null) {
+            $view = $this->view(['error' => 'Review not found'], 404);
+        } else {
+            $this->em->remove($review);
+            $this->em->flush();
+            $view = $this->view(null, 204);
+        }
+
+        if($review == null) {
+            $view = $this->view(['error' => 'Review not found'], 404);
+            return $this->handleView($view);
+        }
         if ($review) {
             $this->em->remove($review);
             $view = $this->view( null, 204);
