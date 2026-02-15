@@ -23,5 +23,7 @@ services:
             $url: '%env(SUPABASE_URL)%'
             $key: '%env(SUPABASE_KEY)%'
             $bucket: '%env(SUPABASE_BUCKET)%'
-
+    App\Service\AuthenticationSuccess:
+        tags:
+            - { name: 'kernel.event_listener', event: 'lexik_jwt_authentication.on_authentication_success', method: 'onAuthenticationSuccess' }
 
