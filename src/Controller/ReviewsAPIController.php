@@ -29,14 +29,17 @@ class ReviewsAPIController extends AbstractFOSRestController
     // READ
 
     #[Rest\Get('/api/v1/reviews', name: 'reviews_list')]
-    public function getReviews(): Response
+    public function getReviews(Request $request): Response
     {
+
+        $page = max(1, (int) $request->query->get('page', 1)); 
+        $limit = max(1, (int) $request->query->get('limit', 10));
         try {
             $reviewsRepo = $this->em->getRepository(Review::class);
-            $reviews = $reviewsRepo->findAll();
-            $this->em->flush();
+            $reviews = $reviewsRepo->findByPage(($page - 1) * $limit, $limit);
+      
         } catch (Exception $e) {
-            return $this->json(['err' => $e], 500);
+            return $this->json(['err' => $e->getMessage()], 500);
         }
 
 

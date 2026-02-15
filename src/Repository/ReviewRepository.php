@@ -16,6 +16,14 @@ class ReviewRepository extends ServiceEntityRepository
         parent::__construct($registry, Review::class);
     }
 
+    public function findByPage($offset, $recordsPerPage) {
+        return $this->createQueryBuilder('r')
+            ->setFirstResult($offset)
+            ->setMaxResults($recordsPerPage)
+            ->getQuery()
+            ->getResult();
+    }   
+
 //    /**
 //     * @return Review[] Returns an array of Review objects
 //     */

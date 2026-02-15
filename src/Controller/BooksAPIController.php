@@ -37,17 +37,18 @@ class BooksAPIController extends AbstractFOSRestController
     }
 
     #[Rest\Get('api/v1/books', name: 'books_list')]
-    public function getBooks() {
+    public function getBooks(Request $request) {
+        $page = max(1, (int) $request->query->get('page', 1)); 
+        $limit = max(1, (int) $request->query->get('limit', 6));
         try {
-
-            $reviews = $this->bookRepo->findAll();
-            $this->em->flush();
+            $books = $this->bookRepo->findByPage(($page - 1) * $limit, $limit);
+            $totalBooks = count($this->bookRepo->findAll());
         } catch (Exception $e) {
             return $this->json(['err' => $e], 500);
         }
 
 
-        $view = $this->view($reviews, 200);
+        $view = $this->view(["data" => $books, "page" => $page, "limit" => $limit, "total" => $totalBooks], 200);
 
         return $this->handleView($view);
     }
@@ -56,14 +57,14 @@ class BooksAPIController extends AbstractFOSRestController
     public function getBook($b_id) {
         try {
 
-            $reviews = $this->bookRepo->find($b_id);
+            $book = $this->bookRepo->find($b_id);
             $this->em->flush();
         } catch (Exception $e) {
             return $this->json(['err' => $e], 500);
         }
 
 
-        $view = $this->view($reviews, 200);
+        $view = $this->view($book, 200);
 
         return $this->handleView($view);
 
