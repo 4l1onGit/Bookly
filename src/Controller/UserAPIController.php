@@ -32,9 +32,15 @@ class UserAPIController extends AbstractFOSRestController
     }
 
     #[Rest\Get('api/v1/users', name: 'users_list')]
-    public function getUsers() {
-        $users = $this->userRepo->findAll();
-        $view = $this->view($users, 200);
+    public function getUsers(Request $request) {
+
+        $page = $request->query->get('page', 0);
+        $limit = $request->query->get('limit', 10);
+        $offset = $page * $limit;
+        $totalUsers = sizeof($this->userRepo->findAll());
+
+        $users = $this->userRepo->findByPage($offset, $limit);
+        $view = $this->view(["data" => $users, "page" => $page, "limit" => $limit, "total" => $totalUsers], 200);
         return $this->handleView($view);
     }
 
